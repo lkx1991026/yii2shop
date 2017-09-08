@@ -7,6 +7,7 @@ use yii\data\Pagination;
 use yii\web\Request;
 use yii\web\UploadedFile;
 use flyok666\uploadifive\UploadAction;
+use flyok666\qiniu\Qiniu;
 
 class BrandController extends \yii\web\Controller
 {
@@ -63,10 +64,11 @@ class BrandController extends \yii\web\Controller
         }
         return $this->render('add',['model'=>$model]);
     }
-    public function actionDelete($id){
+    public function actionDelete(){
+        $id=\Yii::$app->request->post('id');
         $model=Brand::find()->where(['id'=>$id])->one();
         $model->status=-1;
-        $model->save();
+        $model->save(false);
         echo json_encode(
             [
                 'success'=>true,
@@ -116,10 +118,17 @@ class BrandController extends \yii\web\Controller
                 'afterValidate' => function (UploadAction $action) {},
                 'beforeSave' => function (UploadAction $action) {},
                 'afterSave' => function (UploadAction $action) {
-                    $action->output['fileUrl'] = $action->getWebUrl();
+
 //                    $action->getFilename(); // "image/yyyymmddtimerand.jpg"
 //                    $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
 //                    $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
+
+                    $qiniu = new Qiniu(\Yii::$app->params['qiniuyun']);
+                    $key = $action->getWebUrl();
+                    $file=$action->getSavePath();
+                    $qiniu->uploadFile($file,$key);
+                    $url = $qiniu->getLink($key);
+                    $action->output['fileUrl'] = $url;
                 },
             ],
         ];

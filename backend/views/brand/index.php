@@ -33,19 +33,30 @@
                 'nextPageLabel'=>'下一页',
 
         ]
-)?>
-<script type="text/javascript">
-    window.onload=function () {$('.delete').on('click',function () {
-        var id=$(this).closest('tr').find('td:first').text();
-        self=$(this);
-        console.debug(id);
-        $.get('/brand/delete?id='+id,function (data) {
+);
+$del_url=\yii\helpers\Url::to(['brand/delete']);
+$this->registerJs(new \yii\web\JsExpression(
+        <<<js
+        $('.delete').on('click',function () {
+        var tr=$(this).closest('tr');
+        var id= tr.find('td:first').text();
+        if(confirm('确认删除么?')){
+             $.post("{$del_url}",{id:id},function (data) {
             var data=JSON.parse(data);
             if(data.success){
-                self.closest('tr').remove();
+                alert('删除成功');
+                tr.hide('slow');
             }
         })
+            
+        }
+       
     })
-    }
 
-</script>
+
+js
+
+))
+?>
+
+

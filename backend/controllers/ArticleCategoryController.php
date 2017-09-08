@@ -45,10 +45,11 @@ class ArticleCategoryController extends \yii\web\Controller
         }
         return $this->render('add',['model'=>$model]);
     }
-    public function actionDelete($id){
+    public function actionDelete(){
+        $id=\Yii::$app->request->post('id');
         $model=ArticleCategory::find()->where(['id'=>$id])->one();
         $model->status=-1;
-        $rst=$model->save();
+        $rst=$model->save(false);
         if($rst){
         echo json_encode(
             ['success'=>true,'msg'=>'删除成功']
