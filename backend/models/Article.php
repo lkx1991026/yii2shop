@@ -57,9 +57,9 @@ class Article extends \yii\db\ActiveRecord
     public function getArticleCategory(){
         return $this->hasOne(ArticleCategory::className(),['id'=>'article_category_id']);
     }
-    public function getArticleDetail(){
-        return $this->hasOne(ArticleDetail::className(),['article_id'=>'id']);
-    }
+//    public function getArticleDetail(){
+//        return $this->hasOne(ArticleDetail::className(),['article_id'=>'id']);
+//    }
     public function behaviors()
     {
         return [
