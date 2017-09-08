@@ -10,7 +10,7 @@ use yii\web\UploadedFile;
 class BrandController extends \yii\web\Controller
 {
     public function actionIndex()
-    {   $count=Brand::find()->count();
+    {   $count=Brand::find()->where(['!=','status',-1])->count();
         $pager=new Pagination(
             [
                 'defaultPageSize'=>4,
@@ -66,8 +66,14 @@ class BrandController extends \yii\web\Controller
         $model=Brand::find()->where(['id'=>$id])->one();
         $model->status=-1;
         $model->save();
-        \Yii::$app->session->setFlash('success','删除成功!');
-        return $this->redirect(['/brand/index']);
+        echo json_encode(
+            [
+                'success'=>true,
+            'msg'=>'删除成功'
+            ]
+        );
+//        \Yii::$app->session->setFlash('success','删除成功!');
+//        return $this->redirect(['/brand/index']);
     }
 
 }

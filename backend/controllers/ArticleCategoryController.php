@@ -9,7 +9,7 @@ use yii\web\Request;
 class ArticleCategoryController extends \yii\web\Controller
 {
     public function actionIndex()
-    {   $count=ArticleCategory::find()->all();
+    {   $count=ArticleCategory::find()->where(['!=','status',-1])->count();
         $pager=new Pagination(
             [
                 'defaultPageSize'=>4,
@@ -48,9 +48,14 @@ class ArticleCategoryController extends \yii\web\Controller
     public function actionDelete($id){
         $model=ArticleCategory::find()->where(['id'=>$id])->one();
         $model->status=-1;
-        $model->save();
-        \Yii::$app->session->setFlash('success','删除成功');
-        return $this->redirect('/article-category/index');
+        $rst=$model->save();
+        if($rst){
+        echo json_encode(
+            ['success'=>true,'msg'=>'删除成功']
+        )   ;
+
+        }
+
 
     }
 

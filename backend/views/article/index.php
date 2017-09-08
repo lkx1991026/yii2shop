@@ -22,10 +22,17 @@
             <td><?=$model->articleCategory->name?></td>
             <td><?=date('Y-m-d H:i:s',$model->create_time)?></td>
             <td>
-                <a href="<?=\yii\helpers\Url::to(['/article/show?id='.$model->id])?>" class="btn btn-info btn-sm">查看</a>
-                <a href="<?=\yii\helpers\Url::to(['/article/delete?id='.$model->id])?>" class="btn btn-warning btn-sm">删除</a>
+                <a href="<?=\yii\helpers\Url::to(['/article/show?id='.$model->id])?>" class="btn btn-info btn-sm ">查看</a>
+                <a href="<?=\yii\helpers\Url::to(['/article/delete?id='.$model->id])?>" class="btn btn-warning btn-sm delete">删除</a>
                 <a href="<?=\yii\helpers\Url::to(['/article/edit?id='.$model->id])?>" class="btn btn-danger btn-sm">修改</a>
             </td>
         </tr>
     <?php endforeach;?>
 </table>
+<?php echo \yii\widgets\LinkPager::widget(
+    [
+        'pagination'=>$pager,
+        'prevPageLabel'=>'上一页',
+        'nextPageLabel'=>'下一页',
+    ]
+);?>

@@ -18,7 +18,6 @@ use yii\behaviors\TimestampBehavior;
  */
 class Article extends \yii\db\ActiveRecord
 {
-    public $content;
     /**
      * @inheritdoc
      */
@@ -34,9 +33,8 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['intro'], 'string'],
-            [['article_category_id', 'sort', 'status', 'create_time'], 'integer'],
+            [['article_category_id', 'sort', 'status'], 'integer'],
             [['name'], 'string', 'max' => 50],
-        [['content'],'required']
         ];
     }
 

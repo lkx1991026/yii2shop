@@ -21,7 +21,7 @@
             <td><img src="<?=$model->logo?>" class="img-responsive" style="width:50px;"/></td>
             <td>
                 <a href="<?=\yii\helpers\Url::to('/brand/edit?id='.$model->id)?>" class="btn btn-info">编辑</a>
-                <a href="<?=\yii\helpers\Url::to('/brand/delete?id='.$model->id)?>" class="btn btn-danger">删除</a>
+                <a href="javascript:;" class="btn btn-danger delete">删除</a>
             </td>
         </tr>
     <?php endforeach;?>
@@ -34,3 +34,18 @@
 
         ]
 )?>
+<script type="text/javascript">
+    window.onload=function () {$('.delete').on('click',function () {
+        var id=$(this).closest('tr').find('td:first').text();
+        self=$(this);
+        console.debug(id);
+        $.get('/brand/delete?id='+id,function (data) {
+            var data=JSON.parse(data);
+            if(data.success){
+                self.closest('tr').remove();
+            }
+        })
+    })
+    }
+
+</script>

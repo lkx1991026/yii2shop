@@ -4,6 +4,7 @@
 
 <h1>文章分类列表</h1>
 <a href="<?=\yii\helpers\Url::to(['article-category/add'])?>" class="btn btn-info">添加文章分类</a>
+<!--<script src="/assets/d002c34c/jquery.js"></script>-->
 <table class="table table-responsive table-bordered">
     <tr>
         <td>id</td>
@@ -22,15 +23,31 @@
             <td><?=$model->status?'正常':'隐藏'?></td>
             <td>
                 <a href="<?=\yii\helpers\Url::to(['/article-category/edit?id='.$model->id])?>" class="btn btn-info">编辑</a>
-                <a href="<?=\yii\helpers\Url::to(['/article-category/delete?id='.$model->id])?>" class="btn btn-warning">删除</a>
+                <a href="javascript:;" class="btn btn-warning delete">删除</a>
             </td>
         </tr>
     <?php endforeach;?>
 </table>
+
 <?php echo \yii\widgets\LinkPager::widget(
         [
             'pagination'=>$pager,
             'prevPageLabel'=>'上一页',
             'nextPageLabel'=>'下一页',
         ]
-)?>
+);?>
+
+<script type="text/javascript">
+    window.onload=function(){$('.delete').on('click',function () {
+        var id=$(this).closest('tr').find('td:first').text();
+        self=$(this);
+        console.debug(id);
+        $.get('/article-category/delete?id='+id,function (data) {
+            var data=JSON.parse(data);
+            if(data.success){
+                self.closest('tr').remove();
+            }
+        })
+    })}
+</script>
+
