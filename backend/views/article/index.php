@@ -23,7 +23,7 @@
             <td><?=date('Y-m-d H:i:s',$model->create_time)?></td>
             <td>
                 <a href="<?=\yii\helpers\Url::to(['/article/show?id='.$model->id])?>" class="btn btn-info btn-sm ">查看</a>
-                <a href="<?=\yii\helpers\Url::to(['/article/edit?id='.$model->id])?>" class="btn btn-warning btn-sm delete">修改</a>
+                <a href="<?=\yii\helpers\Url::to(['/article/edit?id='.$model->id])?>" class="btn btn-warning btn-sm">修改</a>
                 <a href="javascript:;" class="btn btn-danger btn-sm delete">删除</a>
             </td>
         </tr>

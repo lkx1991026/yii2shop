@@ -51,7 +51,6 @@ class ArticleController extends \yii\web\Controller
             $content->load($request->post());
             if($model->validate()){
                 $model->save();
-
                 $content->save();
                 \Yii::$app->session->setFlash('success','修改成功');
                 return $this->redirect(['article/index']);
@@ -72,5 +71,13 @@ class ArticleController extends \yii\web\Controller
                 ]
             );
         }
+    }
+    public function actions()
+    {
+        return [
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+            ]
+        ];
     }
 }
