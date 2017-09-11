@@ -38,6 +38,7 @@ class GoodsCategory extends \yii\db\ActiveRecord
             [[ 'depth', 'parent_id'], 'integer'],
             [['intro'], 'string'],
             [['name'], 'string', 'max' => 50],
+            [['intro','name'],'required']
         ];
     }
 

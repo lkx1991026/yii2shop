@@ -3,6 +3,8 @@
 namespace backend\controllers;
 
 use backend\models\GoodsCategory;
+use Symfony\Component\CssSelector\XPath\Extension\HtmlExtension;
+use yii\web\HttpException;
 
 class GoodsCategoryController extends \yii\web\Controller
 {
@@ -39,30 +41,36 @@ class GoodsCategoryController extends \yii\web\Controller
         $requset=\Yii::$app->request;
         if($requset->isPost){
             $model->load($requset->post());
-            if($model->validate()){
-                if($model->parent_id){
-                    $parent=GoodsCategory::findOne(['id'=>$model->parent_id]);
+            if($model->validate()) {
+                if ($model->parent_id) {
+                    $parent = GoodsCategory::findOne(['id' => $model->parent_id]);
                     $model->appendTo($parent);
-                }else{
-                    $model->makeRoot();
+
+                } else {
+                    if ($model->getOldAttribute('parent_id') == 0) {
+                        $model->save();
+                    } else {
+                        $model->makeRoot();
+                    }
                 }
+
+                \Yii::$app->session->setFlash('success', '修改成功');
+                return $this->redirect(['index']);
             }
-            \Yii::$app->session->setFlash('success','添加成功');
-            return $this->redirect(['index']);
         }
 
         return $this->render('add',['model'=>$model]);
     }
     public function actionDelete($id){
         $node=GoodsCategory::findOne(['id'=>$id]);
-        $children=GoodsCategory::findAll(['parent_id'=>$node->id]);
+
 //        var_dump($children);exit;
-        if($children!=null){
-            \Yii::$app->session->setFlash('success','删除错误');
+        if($node->isLeaf()){
+            \Yii::$app->session->setFlash('success','删除成功');
+            $node->deleteWithChildren();
 
         }else{
-            \Yii::$app->session->setFlash('success','删除成功');
-            $node->delete();
+            \Yii::$app->session->setFlash('success','删除失败,该分类下有子分类!');
         }
         return $this->redirect('index');
     }
