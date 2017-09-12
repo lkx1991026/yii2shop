@@ -1,6 +1,5 @@
 <?php
 $form=\yii\bootstrap\ActiveForm::begin();
-echo $form->field($model,'path')->hiddenInput();
 echo \yii\bootstrap\Html::fileInput('test', NULL, ['id' => 'test']);
 echo \flyok666\uploadifive\Uploadifive::widget([
 'url' => yii\helpers\Url::to(['s-upload']),
@@ -8,7 +7,7 @@ echo \flyok666\uploadifive\Uploadifive::widget([
 'csrf' => true,
 'renderTag' => false,
 'jsOptions' => [
-'formData'=>['someKey' => 'someValue'],
+'formData'=>['goods_id' => $goods_id],
 'width' => 120,
 'height' => 40,
 'onError' => new \yii\web\JsExpression(<<<EOF
@@ -24,16 +23,20 @@ EOF
     console.log(data.msg);
     } else {
     console.log(data.fileUrl);
-    $('#goodsgallery-path').val(data.fileUrl);
+//    $('#goodsgallery-path').val(data.fileUrl);
     $('#logo').attr('src',data.fileUrl);
+    var html='<img src='+data.fileUrl+' style="width:150px;">';
+
+    $('#img').append(html);
     }
     }
 EOF
 ),
 ]
 ]);
-echo \yii\helpers\Html::submitButton('提交',['class'=>'btn btn-info']);
+
 \yii\bootstrap\ActiveForm::end();
 
 //=====================
-echo \yii\bootstrap\Html::img($model->path?$model->path:null,['id'=>'logo','style'=>'width:100px;']);
+echo "<div id='img'></div>";
+

@@ -1,6 +1,14 @@
 <?php
 /* @var $this yii\web\View */
+$form=\yii\bootstrap\ActiveForm::begin();
+echo $form->field($model,'name')->textInput();
+echo $form->field($model,'sn')->textInput();
+echo $form->field($model,'min')->textInput();
+echo $form->field($model,'max')->textInput();
+echo \yii\helpers\Html::submitButton('搜索',['class'=>'btn btn-info']);
+\yii\bootstrap\ActiveForm::end();
 ?>
+
 <table class="table table-responsive table-bordered">
     <tr>
         <td>id</td>

@@ -13,16 +13,28 @@ use yii\data\Pagination;
 class GoodsController extends \yii\web\Controller
 {
     public function actionIndex()
-    {   $count=Goods::find()->count();
+    {
+        $model=new Goods();
+        $request=\Yii::$app->request;
+        $query=Goods::find();
+        if($request->isPost){
+        $model->load($request->post());
+        $query->andFilterWhere(['like','name',$model->name]);
+        $query->andFilterWhere(['like','sn',$model->sn]);
+        $query->andFilterWhere(['>','market_price',$model->min]);
+        $query->andFilterWhere(['<','market_price',$model->max]);
+    }
+        $count=$query->count();
+
         $pager=new Pagination(
             [
                 'defaultPageSize'=>4,
                 'totalCount'=>$count
             ]
         );
-        $goods=Goods::find()->limit($pager->limit)->offset($pager->offset)->all();
+        $goods=$query->limit($pager->limit)->offset($pager->offset)->all();
 
-        return $this->render('index',['goods'=>$goods,'pager'=>$pager]);
+        return $this->render('index',['goods'=>$goods,'pager'=>$pager,'model'=>$model]);
     }
     public function actionAdd(){
         $goods=new Goods();
@@ -93,15 +105,8 @@ class GoodsController extends \yii\web\Controller
         return $this->redirect(['goods/gallery?id='.$pic->goods_id]);
     }
     public function actionAddgallery($id){
-            $model= new GoodsGallery();
-            $request=\Yii::$app->request;
-            if($request->isPost){
-                $model->load($request->post());
-                $model->goods_id=$id;
-                $model->save();
 
-            }
-            return $this->render('addgallery',['model'=>$model]);
+            return $this->render('addgallery',['goods_id'=>$id]);
     }
     public function actions() {
         return [
@@ -151,6 +156,13 @@ class GoodsController extends \yii\web\Controller
                     $file=$action->getSavePath();
                     $qiniu->uploadFile($file,$key);
                     $url = $qiniu->getLink($key);
+                    $model=new GoodsGallery();
+                    $model->goods_id=$_REQUEST['goods_id'];
+                    if($url!=null){
+                        $model->path=$url;
+                        $model->save();
+                    }
+
                     $action->output['fileUrl'] = $url;
                 },
             ],
