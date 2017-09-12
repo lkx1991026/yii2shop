@@ -6,6 +6,7 @@ use backend\models\Goods;
 use backend\models\GoodsDayCount;
 use backend\models\GoodsGallery;
 use backend\models\GoodsIntro;
+use backend\models\Search;
 use flyok666\qiniu\Qiniu;
 use flyok666\uploadifive\UploadAction;
 use yii\data\Pagination;
@@ -14,15 +15,11 @@ class GoodsController extends \yii\web\Controller
 {
     public function actionIndex()
     {
-        $model=new Goods();
+        $model=new Search();
         $request=\Yii::$app->request;
-        $query=Goods::find();
-        if($request->isPost){
-        $model->load($request->post());
-        $query->andFilterWhere(['like','name',$model->name]);
-        $query->andFilterWhere(['like','sn',$model->sn]);
-        $query->andFilterWhere(['>','market_price',$model->min]);
-        $query->andFilterWhere(['<','market_price',$model->max]);
+        if($request->isGet){
+        $model->load($request->get());
+        $query=Search::getQuery($model);
     }
         $count=$query->count();
 
@@ -33,7 +30,6 @@ class GoodsController extends \yii\web\Controller
             ]
         );
         $goods=$query->limit($pager->limit)->offset($pager->offset)->all();
-
         return $this->render('index',['goods'=>$goods,'pager'=>$pager,'model'=>$model]);
     }
     public function actionAdd(){
@@ -89,13 +85,14 @@ class GoodsController extends \yii\web\Controller
     }
     public function actionDelete($id){
         $goods=Goods::find()->where(['id'=>$id])->one();
-        $goods->delete();
-        \Yii::$app->session->setFlash('success','删除成功');
+        $goods->status=0;
+        $goods->save();
+        \Yii::$app->session->setFlash('success','删除成功,可在回收站找回!');
         return $this->redirect(['index']);
     }
     public function actionGallery($id){
         $pics=GoodsGallery::find()->where(['goods_id'=>$id])->all();
-        return $this->render('gallery',['pics'=>$pics]);
+        return $this->render('gallery',['pics'=>$pics,'goods_id'=>$id]);
     }
     public function actionGdel($id){
 
@@ -104,9 +101,37 @@ class GoodsController extends \yii\web\Controller
         \Yii::$app->session->setFlash('success','删除成功');
         return $this->redirect(['goods/gallery?id='.$pic->goods_id]);
     }
-    public function actionAddgallery($id){
+    public function actionRecycle(){
+        $recycles=Goods::find()->where('status=0')->asArray()->all();
+        echo json_encode($recycles);
+    }
+    public function actionRecovery(){
+        $id=$_POST['id'];
+        $model=Goods::find()->where('id='.$id)->one();
+        if(!$model){
+            echo json_encode(
+                [
+                    'success'=>false,
+                    'msg'=>'恢复失败,数据不存在'
+                ]
+            );
+        }else{
+            $model->status=1;
+            $model->save();
+            echo json_encode(
+                [
+                    'success'=>true,
+                    'msg'=>'数据恢复成功'
+                ]
+            );
+        }
+    }
+    public function actionShow($id){
+        $model=Goods::find()->where('id='.$id)->one();
+        $count=GoodsGallery::find()->where('goods_id='.$id)->count();
+        $gallerys=GoodsGallery::find()->where('goods_id='.$id)->all();
+        return $this->render('show',['model'=>$model,'gallerys'=>$gallerys,'count'=>$count]);
 
-            return $this->render('addgallery',['goods_id'=>$id]);
     }
     public function actions() {
         return [
@@ -156,6 +181,7 @@ class GoodsController extends \yii\web\Controller
                     $file=$action->getSavePath();
                     $qiniu->uploadFile($file,$key);
                     $url = $qiniu->getLink($key);
+
                     $model=new GoodsGallery();
                     $model->goods_id=$_REQUEST['goods_id'];
                     if($url!=null){
@@ -166,6 +192,58 @@ class GoodsController extends \yii\web\Controller
                     $action->output['fileUrl'] = $url;
                 },
             ],
+            'x-upload' => [
+                'class' => UploadAction::className(),
+                'basePath' => '@webroot/upload',
+                'baseUrl' => '@web/upload',
+                'enableCsrf' => true, // default
+                'postFieldName' => 'Filedata', // default
+                //BEGIN METHOD
+                //'format' => [$this, 'methodName'],
+                //END METHOD
+                //BEGIN CLOSURE BY-HASH
+                'overwriteIfExist' => true,
+//                'format' => function (UploadAction $action) {
+//                    $fileext = $action->uploadfile->getExtension();
+//                    $filename = sha1_file($action->uploadfile->tempName);
+//                    return "{$filename}.{$fileext}";
+//                },
+                //END CLOSURE BY-HASH
+                //BEGIN CLOSURE BY TIME
+                'format' => function (UploadAction $action) {
+                    $fileext = $action->uploadfile->getExtension();
+                    $filehash = sha1(uniqid() . time());
+                    $p1 = substr($filehash, 0, 2);
+                    $p2 = substr($filehash, 2, 2);
+                    return "{$p1}/{$p2}/{$filehash}.{$fileext}";
+                },
+                //END CLOSURE BY TIME
+                'validateOptions' => [
+                    'extensions' => ['jpg', 'png','bmp','gif'],
+                    'maxSize' => 1 * 1024 * 1024, //file size
+                ],
+                'beforeValidate' => function (UploadAction $action) {
+                    //throw new Exception('test error');
+                },
+                'afterValidate' => function (UploadAction $action) {},
+                'beforeSave' => function (UploadAction $action) {},
+                'afterSave' => function (UploadAction $action) {
+
+//                    $action->getFilename(); // "image/yyyymmddtimerand.jpg"
+//                    $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
+//                    $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
+
+                    $qiniu = new Qiniu(\Yii::$app->params['qiniuyun']);
+                    $key = $action->getWebUrl();
+                    $file=$action->getSavePath();
+                    $qiniu->uploadFile($file,$key);
+                    $url = $qiniu->getLink($key);
+                    $action->output['fileUrl'] = $url;
+                },
+            ],
+            'upload' => [
+                'class' => 'kucha\ueditor\UEditorAction',
+            ]
         ];
     }
 

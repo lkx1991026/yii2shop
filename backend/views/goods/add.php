@@ -12,7 +12,7 @@ echo $form->field($goods,'logo')->hiddenInput();
 //===================上传文件插件
 echo \yii\bootstrap\Html::fileInput('test', NULL, ['id' => 'test']);
 echo \flyok666\uploadifive\Uploadifive::widget([
-            'url' => yii\helpers\Url::to(['s-upload']),
+            'url' => yii\helpers\Url::to(['x-upload']),
             'id' => 'test',
             'csrf' => true,
             'renderTag' => false,

@@ -26,6 +26,7 @@ class Goods extends \yii\db\ActiveRecord
 {
     public $min;
     public $max;
+    public $search_name;
     /**
      * @inheritdoc
      */
@@ -41,11 +42,13 @@ class Goods extends \yii\db\ActiveRecord
     {
         return [
             [['goods_catgory_id', 'brand_id', 'stock', 'is_on_sale', 'status', 'sort'], 'integer'],
+            [['goods_catgory_id', 'brand_id', 'stock', 'is_on_sale', 'status', 'sort'], 'required'],
             [['market_price', 'shop_price'], 'number'],
             [['name', 'sn'], 'string', 'max' => 20],
             [['logo'], 'string', 'max' => 255],
             ['goods_catgory_id','required','message'=>'请选择商品分类!'],
-            [['min','max'],'integer']
+            [['min','max'],'integer'],
+            ['search_name','string']
 
         ];
     }
@@ -77,5 +80,8 @@ class Goods extends \yii\db\ActiveRecord
     }
     public function getBrand(){
         return $this->hasOne(Brand::className(),['id'=>'brand_id']);
+    }
+    public function getIntro(){
+        return $this->hasOne(GoodsIntro::className(),['goods_id'=>'id']);
     }
 }
