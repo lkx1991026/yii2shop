@@ -34,20 +34,22 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+
     $menuItems = [
-        ['label' => 'Home', 'url' => ['/admin/index']],
+        ['label' => '首页', 'url' => ['/admin/index']],
     ];
     if (Yii::$app->user->isGuest) {
-        $menuItems[] = ['label' => 'Login', 'url' => ['/admin/login']];
+        $menuItems[] = ['label' => '登陆', 'url' => ['/admin/login']];
     } else {
         $menuItems[] = '<li>'
             . Html::beginForm(['/admin/logout'], 'post')
             . Html::submitButton(
-                'Logout (' . Yii::$app->user->identity->username . ')',
+                '注销登陆 (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()
             . '</li>';
+        $menuItems[]=['label'=>'更改密码','url'=>['/admin/changepwd?id='.Yii::$app->user->getId()]];
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],

@@ -23,10 +23,11 @@ use yii\web\IdentityInterface;
 class Admin extends \yii\db\ActiveRecord implements IdentityInterface
 {
     public $password;
-    public $repassword;
     public $newpassword;
     public $renewpassword;
-    public $remember;
+    const SCENARIO_ADD='add';
+    const SCENARIO_EDIT='edit';
+    const SCENARIO_CHANGEPWD='pwd';
     /**
      * @inheritdoc
      */
@@ -43,16 +44,16 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
         return [
             [['username', 'email'], 'required'],
             [['username', 'email'], 'string', 'max' => 255],
-            [['username'], 'unique','message'=>'用户名已存在'],
+            [['username'], 'unique','message'=>'用户名已存在','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
             [['email'], 'unique'],
-            ['email','email','message'=>'邮箱格式不正确'],
-            ['password','required'],
+            ['email','email','message'=>'邮箱格式不正确','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
+            ['password','required','on'=>[self::SCENARIO_ADD,self::SCENARIO_CHANGEPWD],'message'=>'请输入密码'],
+            ['password','string'],
             [['auth_key'], 'string', 'max' => 100],
-            [['repassword'],'compare','compareAttribute'=>'password','message'=>'两次输入密码不一致'],
-            [['newpassword','renewpassword'],'string'],
-            ['renewpassword','compare','compareAttribute'=>'newpassword','message'=>'两次输入密码不一致'],
-            ['status','required'],
-            ['remember','safe']
+//            [['repassword'],'compare','compareAttribute'=>'password','message'=>'两次输入密码不一致'],
+            [['newpassword','renewpassword'],'required','on'=>self::SCENARIO_CHANGEPWD,'message'=>'请输入新密码'],
+            ['renewpassword','compare','compareAttribute'=>'newpassword','message'=>'两次输入密码不一致','on'=>self::SCENARIO_CHANGEPWD],
+            ['status','required','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
         ];
     }
 
@@ -73,9 +74,39 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'updated_at' => '更新时间',
             'last_login_time' => '最后登录时间',
             'last_login_ip' => '最后登录ip',
-            'newpassword'=>'新密码(如需修改再填写)',
+            'newpassword'=>'新密码',
             'renewpassword'=>'重复新密码'
         ];
+    }
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->auth_key = \Yii::$app->security->generateRandomString();
+            $this->created_at = time();
+            $this->password_hash = \Yii::$app->security->generatePasswordHash($this->password);
+        } else {
+            if(!empty($this->password)){
+                if (empty($this->newpassword)) {
+                    $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
+                } else {
+                    if((Yii::$app->security->validatePassword($this->password, $this->password_hash))){
+                        $this->password_hash = Yii::$app->security->generatePasswordHash($this->newpassword);
+                    }else{
+                        return false;
+                    }
+                }
+                $this->auth_key = Yii::$app->security->generateRandomString();
+                $this->updated_at = time();
+            }
+//            if(empty($this->login_pwd)){
+//                $this->last_login_time = time();
+//                $this->last_login_ip = \Yii::$app->request->getUserIP();
+//            }
+
+            }
+
+
+        return parent::beforeSave($insert);
     }
 
     public static function findIdentity($id)
