@@ -94,12 +94,12 @@ class GoodsController extends \yii\web\Controller
         $pics=GoodsGallery::find()->where(['goods_id'=>$id])->all();
         return $this->render('gallery',['pics'=>$pics,'goods_id'=>$id]);
     }
-    public function actionGdel($id){
-
+    public function actionGdel(){
+        $id=\Yii::$app->request->post('id');
         $pic=GoodsGallery::find()->where(['id'=>$id])->one();
         $pic->delete();
-        \Yii::$app->session->setFlash('success','删除成功');
-        return $this->redirect(['goods/gallery?id='.$pic->goods_id]);
+//        \Yii::$app->session->setFlash('success','删除成功');
+//        return $this->redirect(['goods/gallery?id='.$pic->goods_id]);
     }
     public function actionRecycle(){
         $recycles=Goods::find()->where('status=0')->asArray()->all();
@@ -187,9 +187,11 @@ class GoodsController extends \yii\web\Controller
                     if($url!=null){
                         $model->path=$url;
                         $model->save();
+                        $id=$model->id;
                     }
 
                     $action->output['fileUrl'] = $url;
+                    $action->output['id'] = $id;
                 },
             ],
             'x-upload' => [
