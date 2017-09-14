@@ -4,6 +4,7 @@ namespace backend\models;
 
 use Yii;
 use yii\web\IdentityInterface;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is the model class for table "admin".

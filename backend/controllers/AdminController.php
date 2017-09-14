@@ -5,6 +5,8 @@ namespace backend\controllers;
 use backend\models\Admin;
 use backend\models\LoginForm;
 use yii\captcha\CaptchaAction;
+use yii\data\Pagination;
+use yii\filters\AccessControl;
 use yii\web\Cookie;
 
 class AdminController extends \yii\web\Controller
@@ -23,9 +25,16 @@ class AdminController extends \yii\web\Controller
         return $this->render('add',['model'=>$model]);
     }
     public function actionIndex()
-    {
-        $models=Admin::find()->where(['!=','status',-1])->all();
-        return $this->render('index',['models'=>$models]);
+    {   $query=Admin::find();
+        $count=$query->where(['!=','status',-1])->count();
+        $pager=new Pagination(
+            [
+                'defaultPageSize'=>4,
+                'totalCount'=>$count
+            ]
+        );
+        $models=$query->where(['!=','status',-1])->limit($pager->limit)->offset($pager->offset)->all();
+        return $this->render('index',['models'=>$models,'pager'=>$pager]);
     }
     public function actionEdit($id){
         $model=Admin::find()->where('id='.$id)->one();
@@ -54,7 +63,7 @@ class AdminController extends \yii\web\Controller
                         return $this->redirect(['admin/login']);
                     }else{
                         \Yii::$app->session->setFlash('success','旧密码输入错误,请重试!');
-                        return $this->goBack(['admin/changepwd?id='.$id]);
+                        return $this->redirect(['admin/changepwd?id='.$id]);
                     }
 
                 }
@@ -130,6 +139,27 @@ class AdminController extends \yii\web\Controller
                 'minLength'=>3,
                 'maxLength'=>3,
             ]
+        ];
+    }
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['login', 'logout','index','add'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['login'],
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['logout','index','add'],
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
         ];
     }
 
