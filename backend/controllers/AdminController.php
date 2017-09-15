@@ -38,6 +38,7 @@ class AdminController extends \yii\web\Controller
     }
     public function actionEdit($id){
         $model=Admin::find()->where('id='.$id)->one();
+        $model->scenario=Admin::SCENARIO_EDIT;
         $request=\Yii::$app->request;
         if($request->isPost){
             $model->load($request->post());
@@ -57,17 +58,12 @@ class AdminController extends \yii\web\Controller
             if($request->isPost){
                 $model->load($request->post());
                 if($model->validate()){
-                    if($model->save()){
+                        $model->password=$model->newpassword;
+                        $model->save();
                         \Yii::$app->user->logout();
                         \Yii::$app->session->setFlash('success','修改密码成功,请重新登陆!');
                         return $this->redirect(['admin/login']);
-                    }else{
-                        \Yii::$app->session->setFlash('success','旧密码输入错误,请重试!');
-                        return $this->redirect(['admin/changepwd?id='.$id]);
-                    }
-
                 }
-
             }
             return $this->render('changepwd',['model'=>$model]);
     }

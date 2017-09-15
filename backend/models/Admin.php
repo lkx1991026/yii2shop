@@ -24,6 +24,7 @@ use yii\web\NotFoundHttpException;
 class Admin extends \yii\db\ActiveRecord implements IdentityInterface
 {
     public $password;
+    public $oldpassword;
     public $newpassword;
     public $renewpassword;
     const SCENARIO_ADD='add';
@@ -48,19 +49,26 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             [['username'], 'unique','message'=>'用户名已存在','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
             [['email'], 'unique'],
             ['email','email','message'=>'邮箱格式不正确','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
-            ['password','required','on'=>[self::SCENARIO_ADD,self::SCENARIO_CHANGEPWD],'message'=>'请输入密码'],
+            ['password','required','on'=>self::SCENARIO_ADD,'message'=>'请输入密码'],
             ['password','string'],
             [['auth_key'], 'string', 'max' => 100],
 //            [['repassword'],'compare','compareAttribute'=>'password','message'=>'两次输入密码不一致'],
             [['newpassword','renewpassword'],'required','on'=>self::SCENARIO_CHANGEPWD,'message'=>'请输入新密码'],
             ['renewpassword','compare','compareAttribute'=>'newpassword','message'=>'两次输入密码不一致','on'=>self::SCENARIO_CHANGEPWD],
             ['status','required','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
+            ['oldpassword','checkPassword','on'=>self::SCENARIO_CHANGEPWD],
+            ['oldpassword','required','message'=>'请输入密码','on'=>self::SCENARIO_CHANGEPWD]
         ];
     }
 
     /**
      * @inheritdoc
      */
+    public function checkPassword(){
+        if(!Yii::$app->security->validatePassword($this->oldpassword,Yii::$app->user->identity->password_hash)){
+            $this->addError('oldpassword','密码错误');
+        }
+    }
     public function attributeLabels()
     {
         return [
@@ -86,18 +94,11 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             $this->created_at = time();
             $this->password_hash = \Yii::$app->security->generatePasswordHash($this->password);
         } else {
-            if(!empty($this->password)){
-                if (empty($this->newpassword)) {
-                    $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
-                } else {
-                    if((Yii::$app->security->validatePassword($this->password, $this->password_hash))){
-                        $this->password_hash = Yii::$app->security->generatePasswordHash($this->newpassword);
-                    }else{
-                        return false;
-                    }
-                }
+            $this->updated_at = time();
+            if($this->password){
+                $this->password_hash = Yii::$app->security->generatePasswordHash($this->password);
                 $this->auth_key = Yii::$app->security->generateRandomString();
-                $this->updated_at = time();
+
             }
 //            if(empty($this->login_pwd)){
 //                $this->last_login_time = time();
