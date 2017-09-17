@@ -19,6 +19,12 @@ class AdminController extends \yii\web\Controller
             $model->load($request->post());
             if($model->validate()){
                 $model->save();
+                if($model->roles!=null){
+                    $auth=\Yii::$app->authManager;
+                    foreach($model->roles as $role){
+                        $auth->assign($auth->getRole($role),$model->id);
+                    }
+                }
                 return $this->redirect(['/admin/index']);
             }
         }
@@ -39,11 +45,21 @@ class AdminController extends \yii\web\Controller
     public function actionEdit($id){
         $model=Admin::find()->where('id='.$id)->one();
         $model->scenario=Admin::SCENARIO_EDIT;
+        $roles=\Yii::$app->authManager->getRolesByUser($id);
+        $model->roles=array_keys($roles);
         $request=\Yii::$app->request;
         if($request->isPost){
             $model->load($request->post());
             if($model->validate()){
                 $model->save();
+                if($model->roles!=null){
+                    \Yii::$app->authManager->revokeAll($model->id);
+                    foreach($model->roles as $role){
+                        \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole($role),$model->id);
+                    }
+                }
+
+
                 \Yii::$app->session->setFlash('success','修改成功!');
                 return $this->redirect(['admin/index']);
             }else{
@@ -70,6 +86,7 @@ class AdminController extends \yii\web\Controller
     public function actionDelete($id){
         $model=Admin::find()->where('id='.$id)->one();
         $model->status=-1;
+        \Yii::$app->authManager->revokeAll($id);
         var_dump($model->save(false));
         \Yii::$app->session->setFlash('success','删除成功');
         return $this->redirect(['admin/index']);

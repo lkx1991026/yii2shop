@@ -27,6 +27,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public $oldpassword;
     public $newpassword;
     public $renewpassword;
+    public $roles;
     const SCENARIO_ADD='add';
     const SCENARIO_EDIT='edit';
     const SCENARIO_CHANGEPWD='pwd';
@@ -57,7 +58,8 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             ['renewpassword','compare','compareAttribute'=>'newpassword','message'=>'两次输入密码不一致','on'=>self::SCENARIO_CHANGEPWD],
             ['status','required','on'=>[self::SCENARIO_ADD,self::SCENARIO_EDIT]],
             ['oldpassword','checkPassword','on'=>self::SCENARIO_CHANGEPWD],
-            ['oldpassword','required','message'=>'请输入密码','on'=>self::SCENARIO_CHANGEPWD]
+            ['oldpassword','required','message'=>'请输入密码','on'=>self::SCENARIO_CHANGEPWD],
+            ['roles','safe']
         ];
     }
 
@@ -84,7 +86,8 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'last_login_time' => '最后登录时间',
             'last_login_ip' => '最后登录ip',
             'newpassword'=>'新密码',
-            'renewpassword'=>'重复新密码'
+            'renewpassword'=>'重复新密码',
+            'roles'=>'角色'
         ];
     }
     public function beforeSave($insert)
@@ -134,5 +137,13 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->auth_key === $authKey;
+    }
+    public static function getRoles(){
+        $roles=Yii::$app->authManager->getRoles();
+        $items=[];
+        foreach($roles as $role){
+            $items[$role->name]=$role->description;
+        }
+        return $items;
     }
 }
