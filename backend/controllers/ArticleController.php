@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Article;
 use backend\models\ArticleCategory;
 use backend\models\ArticleDetail;
@@ -77,6 +78,15 @@ class ArticleController extends \yii\web\Controller
         return [
             'upload' => [
                 'class' => 'kucha\ueditor\UEditorAction',
+            ]
+        ];
+    }
+    public function behaviors()
+    {
+        return [
+            'filter'=>[
+                'class'=>RbacFilter::className(),
+                'except'=>['login','logout','error','captcha']
             ]
         ];
     }

@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\ArticleCategory;
 use yii\data\Pagination;
 use yii\web\Request;
@@ -56,8 +57,14 @@ class ArticleCategoryController extends \yii\web\Controller
         )   ;
 
         }
-
-
     }
-
+    public function behaviors()
+    {
+        return [
+            'filter'=>[
+                'class'=>RbacFilter::className(),
+                'except'=>['login','logout','error','captcha']
+            ]
+        ];
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Admin;
 use backend\models\LoginForm;
 use yii\captcha\CaptchaAction;
@@ -157,24 +158,11 @@ class AdminController extends \yii\web\Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['login', 'logout','index','add'],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'actions' => ['login'],
-                        'roles' => ['?'],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['logout','index','add'],
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
+            'filter'=>[
+                'class'=>RbacFilter::className(),
+                'except'=>['login','logout','error','captcha']
+            ]
         ];
     }
-
 
 }

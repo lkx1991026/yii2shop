@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\AddPermissionForm;
 use backend\models\AddRole;
 
@@ -47,8 +48,9 @@ class RbacController extends \yii\web\Controller
         if ($request->isPost) {
             $model->load($request->post());
             if ($model->validate()) {
+                $permission->name=$model->name;
                 $permission->description = $model->description;
-                $auth->update($model->name, $permission);
+                $auth->update($name, $permission);
                 \Yii::$app->session->setFlash('success', '修改权限成功');
                 return $this->redirect(['rbac/permission-index']);
             }
@@ -136,5 +138,14 @@ class RbacController extends \yii\web\Controller
         $auth->remove($role);
         \Yii::$app->session->setFlash('success','删除角色成功');
         return $this->redirect(['rbac/index-role']);
+    }
+    public function behaviors()
+    {
+        return [
+            'filter'=>[
+                'class'=>RbacFilter::className(),
+                'except'=>['login','logout','error','captcha']
+            ]
+        ];
     }
 }

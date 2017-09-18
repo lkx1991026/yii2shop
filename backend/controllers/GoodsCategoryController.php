@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\GoodsCategory;
 use Symfony\Component\CssSelector\XPath\Extension\HtmlExtension;
 use yii\web\HttpException;
@@ -73,5 +74,14 @@ class GoodsCategoryController extends \yii\web\Controller
             \Yii::$app->session->setFlash('success','删除失败,该分类下有子分类!');
         }
         return $this->redirect('index');
+    }
+    public function behaviors()
+    {
+        return [
+            'filter'=>[
+                'class'=>RbacFilter::className(),
+                'except'=>['login','logout','error','captcha']
+            ]
+        ];
     }
 }

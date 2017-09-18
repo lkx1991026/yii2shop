@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\RbacFilter;
 use backend\models\Goods;
 use backend\models\GoodsDayCount;
 use backend\models\GoodsGallery;
@@ -176,21 +177,21 @@ class GoodsController extends \yii\web\Controller
 //                    $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
 //                    $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
 
-                    $qiniu = new Qiniu(\Yii::$app->params['qiniuyun']);
+//                    $qiniu = new Qiniu(\Yii::$app->params['qiniuyun']);
                     $key = $action->getWebUrl();
-                    $file=$action->getSavePath();
-                    $qiniu->uploadFile($file,$key);
-                    $url = $qiniu->getLink($key);
+//                    $file=$action->getSavePath();
+//                    $qiniu->uploadFile($file,$key);
+//                    $url = $qiniu->getLink($key);
 
                     $model=new GoodsGallery();
                     $model->goods_id=$_REQUEST['goods_id'];
-                    if($url!=null){
-                        $model->path=$url;
+                    if($key!=null){
+                        $model->path=$key;
                         $model->save();
                         $id=$model->id;
                     }
 
-                    $action->output['fileUrl'] = $url;
+                    $action->output['fileUrl'] = $key;
                     $action->output['id'] = $id;
                 },
             ],
@@ -235,12 +236,12 @@ class GoodsController extends \yii\web\Controller
 //                    $action->getWebUrl(); //  "baseUrl + filename, /upload/image/yyyymmddtimerand.jpg"
 //                    $action->getSavePath(); // "/var/www/htdocs/upload/image/yyyymmddtimerand.jpg"
 
-                    $qiniu = new Qiniu(\Yii::$app->params['qiniuyun']);
+//                    $qiniu = new Qiniu(\Yii::$app->params['qiniuyun']);
                     $key = $action->getWebUrl();
-                    $file=$action->getSavePath();
-                    $qiniu->uploadFile($file,$key);
-                    $url = $qiniu->getLink($key);
-                    $action->output['fileUrl'] = $url;
+//                    $file=$action->getSavePath();
+//                    $qiniu->uploadFile($file,$key);
+//                    $url = $qiniu->getLink($key);
+                    $action->output['fileUrl'] = $key;
                 },
             ],
             'upload' => [
@@ -248,6 +249,14 @@ class GoodsController extends \yii\web\Controller
             ]
         ];
     }
-
+    public function behaviors()
+    {
+        return [
+            'filter'=>[
+                'class'=>RbacFilter::className(),
+                'except'=>['s-upload','x-upload']
+            ]
+        ];
+    }
 
 }

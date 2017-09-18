@@ -41,15 +41,22 @@ AppAsset::register($this);
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => '登陆', 'url' => ['/admin/login']];
     } else {
-        $menuItems[] = '<li>'
-            . Html::beginForm(['/admin/logout'], 'post')
-            . Html::submitButton(
-                '注销登陆 (' . Yii::$app->user->identity->username . ')',
-                ['class' => 'btn btn-link logout']
-            )
-            . Html::endForm()
-            . '</li>';
-        $menuItems[]=['label'=>'更改密码','url'=>['/admin/changepwd?id='.Yii::$app->user->getId()]];
+        $menuItems=\backend\models\Menu::getMenus();
+        $menuItems[]=['label'=> Yii::$app->user->identity->username,'items'=>[
+            ['label'=>'注销登陆','url'=>['admin/logout']],
+            ['label'=>'更改密码','url'=>['/admin/changepwd?id='.Yii::$app->user->getId()]]
+        ]];
+
+//        $menuItems[] = '<li>'
+//            . Html::beginForm(['/admin/logout'], 'post')
+//            . Html::submitButton(
+//                '注销登陆 (' . Yii::$app->user->identity->username . ')',
+//                ['class' => 'btn btn-link logout']
+//            )
+//            . Html::endForm()
+//            . '</li>';
+//
+//        $menuItems[]=['label'=>'更改密码','url'=>['/admin/changepwd?id='.Yii::$app->user->getId()]];
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
