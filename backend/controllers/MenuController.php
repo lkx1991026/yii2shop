@@ -26,17 +26,7 @@ class MenuController extends Controller{
     }
     public function actionIndex(){
         $query=Menu::find();
-//        $count=$query->count();
-//        $pager=new Pagination(
-//            [
-//                'defaultPageSize'=>40,
-//                'totalCount'=>$count
-//            ]
-//        );
-
         $model=$query->asArray()->all();
-//        var_dump($model);exit;
-
         $lists=Menu::getListByCat($model,0,0);
         return $this->render('index',['lists'=>$lists]);
     }

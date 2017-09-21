@@ -99,5 +99,4 @@ class GoodsCategory extends \yii\db\ActiveRecord
             return self::$list;
         }
 
-
 }
