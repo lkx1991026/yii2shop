@@ -40,6 +40,7 @@ class MemberController extends \yii\web\Controller
                     $user->last_login_time=time();
                     $user->save(false);
                     \Yii::$app->user->login($user,$remember?3600:0);
+                    Member::CookieToTable();
                     return $this->redirect(['address/index']);
                 }
             }
@@ -111,5 +112,9 @@ class MemberController extends \yii\web\Controller
         }else{
             return 'false';
         }
+    }
+    public function actionLogout(){
+        \Yii::$app->user->logout();
+        return $this->redirect(['index/index']);
     }
 }

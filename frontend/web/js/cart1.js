@@ -24,6 +24,10 @@ $(function(){
 		});
 
 		$("#total").text(total.toFixed(2));
+		var goods_id=$(this).closest('tr').attr('data-id');
+		console.debug(goods_id);
+		console.debug(amount.val());
+		changeAmount(goods_id,$(amount).val());
 	});
 
 	//增加
@@ -40,6 +44,8 @@ $(function(){
 		});
 
 		$("#total").text(total.toFixed(2));
+        var goods_id=$(this).closest('tr').attr('data-id');
+        changeAmount(goods_id,$(amount).val());
 	});
 
 	//直接输入
@@ -58,6 +64,14 @@ $(function(){
 		});
 
 		$("#total").text(total.toFixed(2));
+		var goods_id=$(this).closest('tr').attr('data-id');
+		changeAmount(goods_id,$(this).val());
 
 	});
+	var changeAmount=function (goods_id,amount) {
+		$.post('changeamount.html',{goods_id:goods_id,amount:amount},function () {
+			
+        })
+    };
+
 });

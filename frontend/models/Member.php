@@ -68,4 +68,31 @@ class Member extends ActiveRecord implements IdentityInterface
     {
         return $this->getAuthKey() == $authKey;
     }
+    public static function CookieToTable(){
+        $member_id=\Yii::$app->user->getId();
+        $cookies=\Yii::$app->request->cookies;
+        $cookie=$cookies->get('cart');
+        $value=$cookies->getValue('cart');
+        if($value){
+            $carts=unserialize($value);
+        }
+        if(isset($carts)){
+            foreach($carts as $key=>$cart){
+                $model=Cart::find()->where(['=','goods_id',$key])->andWhere(['=','member_id',$member_id])->one();
+                if($model){
+                    $model->amount+=$cart;
+                }else{
+                    $model=new Cart();
+                    $model->member_id=$member_id;
+                    $model->goods_id=$key;
+                    $model->amount=$cart;
+                }
+                $model->save();
+                $cookies=\Yii::$app->response->cookies;
+                $cookies->remove($cookie);
+            }
+        }
+
+
+    }
 }

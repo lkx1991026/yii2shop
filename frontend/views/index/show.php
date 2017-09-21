@@ -43,7 +43,11 @@
         </div>
         <div class="topnav_right fr">
             <ul>
-                <li>您好，欢迎来到京西！[<a href="login.html">登录</a>] [<a href="register.html">免费注册</a>] </li>
+                <?php if(Yii::$app->user->isGuest):?>
+                    <li>您好，欢迎来到京西！[<a href="<?=\yii\helpers\Url::to(['member/login'])?>">登录</a>] [<a href="<?=\yii\helpers\Url::to(['member/register'])?>">免费注册</a>] </li>
+                <?php else:?>
+                    <li>您好，欢迎回来<?=Yii::$app->user->identity->username?>！[<a href="<?=\yii\helpers\Url::to(['index/cart'])?>">我的购物车</a>] [<a href="<?=\yii\helpers\Url::to(['member/logout'])?>">安全退出</a>] </li>
+                <?php endif;?>
                 <li class="line">|</li>
                 <li>我的订单</li>
                 <li class="line">|</li>
@@ -590,7 +594,7 @@
                     <li><span>上架时间：</span><?=date('Y-m-d',$model->create_time)?></li>
                     <li class="star"><span>商品浏览次数：</span> <strong></strong><a href="">(已有<?=$model->view_times?>人浏览)</a></li> <!-- 此处的星级切换css即可 默认为5星 star4 表示4星 star3 表示3星 star2表示2星 star1表示1星 -->
                 </ul>
-                <form action="" method="post" class="choose">
+                <form action="<?=\yii\helpers\Url::to(['index/addcart'])?>" method="get" class="choose">
                     <ul>
 
                         <li>
@@ -598,6 +602,7 @@
                                 <dt>购买数量：</dt>
                                 <dd>
                                     <a href="javascript:;" id="reduce_num"></a>
+                                    <input type="hidden" name="goods_id" value="<?=$model->id?>">
                                     <input type="text" name="amount" value="1" class="amount"/>
                                     <a href="javascript:;" id="add_num"></a>
                                 </dd>
