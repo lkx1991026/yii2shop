@@ -20,7 +20,8 @@ class m170918_085541_create_address_table extends Migration
             'area_id'=>$this->integer()->comment('区县id'),
             'addr'=>$this->string()->comment('详细地址'),
             'tel'=>$this->string()->comment('联系电话'),
-            'is_default_addr'=>$this->smallInteger()->comment('默认收货地址')
+            'is_default_addr'=>$this->smallInteger()->comment('默认收货地址'),
+            'user_id'=>$this->smallInteger()->comment('用户id')
         ]);
     }
 
