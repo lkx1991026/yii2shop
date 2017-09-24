@@ -12,6 +12,7 @@ use flyok666\qiniu\Qiniu;
 
 class BrandController extends \yii\web\Controller
 {
+    public $enableCsrfValidation=false;
     public function actionIndex()
     {   $count=Brand::find()->where(['!=','status',-1])->count();
         $pager=new Pagination(
