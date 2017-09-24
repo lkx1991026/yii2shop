@@ -28,7 +28,7 @@
                     <li>您好，欢迎回来<?=Yii::$app->user->identity->username?>！[<a href="<?=\yii\helpers\Url::to(['index/cart'])?>">我的购物车</a>] [<a href="<?=\yii\helpers\Url::to(['member/logout'])?>">安全退出</a>] </li>
                 <?php endif;?>
                 <li class="line">|</li>
-                <li>我的订单</li>
+                <li><a href="<?=\yii\helpers\Url::to(['index/myorder'])?>">我的订单</a></li>
                 <li class="line">|</li>
                 <li>客户服务</li>
 
@@ -92,8 +92,8 @@
         </tfoot>
     </table>
     <div class="cart_btn w990 bc mt10">
-        <a href="" class="continue">继续购物</a>
-        <a href="" class="checkout">结 算</a>
+        <a href="<?=\yii\helpers\Url::to(['index/index'])?>" class="continue">继续购物</a>
+        <a href="<?=\yii\helpers\Url::to(['index/order'])?>" class="checkout">结 算</a>
     </div>
 </div>
 <!-- 主体部分 end -->
@@ -125,14 +125,7 @@
     </p>
 </div>
 <script type="text/javascript">
-    $('.changeamount').on('click',function () {
-        var goods_id=$(this).closest('tr').attr('data-id');
-        self=$(this);
-        $.post('changeamount.html',{goods_id:goods_id,amount:0},function () {
-            self.closest('tr').remove();
-        })
 
-    })
 
 </script>
 <!-- 底部版权 end -->

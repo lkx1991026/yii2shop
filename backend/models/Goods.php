@@ -42,20 +42,29 @@ class Goods extends \yii\db\ActiveRecord
     {
         return [
             [['goods_catgory_id', 'brand_id', 'stock', 'is_on_sale', 'status', 'sort'], 'integer'],
-            [['goods_catgory_id', 'brand_id', 'stock', 'is_on_sale', 'status', 'sort'], 'required'],
+            [[ 'brand_id', 'stock', 'is_on_sale', 'status', 'sort'], 'required'],
             [['market_price', 'shop_price'], 'number'],
             [['name', 'sn'], 'string', 'max' => 20],
             [['logo'], 'string', 'max' => 255],
             ['goods_catgory_id','required','message'=>'请选择商品分类!'],
+            ['goods_catgory_id','checkdepth'],
             [['min','max'],'integer'],
             ['search_name','string']
 
         ];
     }
+    public function checkdepth(){
+        $depth=GoodsCategory::find()->where(['id'=>$this->goods_catgory_id])->andWhere(['!=','depth',2])->one();
+        if($depth){
+            $this->addError('goods_catgory_id','商品分类必须为三级分类');
+        }
+
+    }
 
     /**
      * @inheritdoc
      */
+
     public function attributeLabels()
     {
         return [

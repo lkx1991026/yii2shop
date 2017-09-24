@@ -29,7 +29,7 @@
                     <li>您好，欢迎回来<?=Yii::$app->user->identity->username?>！[<a href="<?=\yii\helpers\Url::to(['index/cart'])?>">我的购物车</a>] [<a href="<?=\yii\helpers\Url::to(['member/logout'])?>">安全退出</a>] </li>
                 <?php endif;?>
                 <li class="line">|</li>
-                <li>我的订单</li>
+                <li><a href="<?=\yii\helpers\Url::to(['index/myorder'])?>">我的订单</a></li>
                 <li class="line">|</li>
                 <li>客户服务</li>
 

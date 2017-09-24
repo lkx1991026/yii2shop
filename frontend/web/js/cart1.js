@@ -29,7 +29,19 @@ $(function(){
 		console.debug(amount.val());
 		changeAmount(goods_id,$(amount).val());
 	});
+    $('.changeamount').on('click',function () {
+        var goods_id=$(this).closest('tr').attr('data-id');
+        self=$(this);
+        $.post('changeamount.html',{goods_id:goods_id,amount:0},function () {
+            self.closest('tr').remove()
+            var total = 0;
+            $(".col5 span").each(function(){
+                total += parseFloat($(this).text());
+            });
+            $("#total").text(total.toFixed(2));
+        })
 
+    })
 	//增加
 	$(".add_num").click(function(){
 		var amount = $(this).parent().find(".amount");
@@ -70,7 +82,6 @@ $(function(){
 	});
 	var changeAmount=function (goods_id,amount) {
 		$.post('changeamount.html',{goods_id:goods_id,amount:amount},function () {
-			
         })
     };
 
