@@ -115,7 +115,7 @@
         <div class="cart fl">
             <dl>
                 <dt>
-                    <a href="">去购物车结算</a>
+                    <a href="<?=\yii\helpers\Url::to(['index/cart','id'=>Yii::$app->user->id])?>">去购物车结算</a>
                     <b></b>
                 </dt>
                 <dd>
@@ -505,28 +505,27 @@
                     4=>'完成',
 
                 ];
-                foreach($orderlists as $k=>$orderlist):
-                    foreach($orderlist as $i=>$order):
-                    ?>
+                foreach($orders as $order):?>
 
                 <tr>
-                    <?php if($i==0):?>
-                    <td rowspan="<?=count($orderlist)?>"><a href=""><?=$k?></a></td>
-                    <?php endif;?>
-                    <td><a href="<?=\yii\helpers\Url::to(['index/detail','id'=>$order['goods_id']])?>"><img src="<?=$order['logo']?>" alt="" /></a></td>
-                    <?php if($i==0):?>
-                        <td rowspan="<?=count($orderlist)?>"><?=$order['username']?></td>
-                    <?php endif;?>
-                    <td>￥<?=$order['total']?>&nbsp;<?=$order['payment']?></td>
-                    <?php if($i==0):?>
-                        <td rowspan="<?=count($orderlist)?>"><?=date('Y-m-d H:i:s',$order['create_time'])?> </td>
-                        <td rowspan="<?=count($orderlist)?>"><?=$status[$order['status']]?></td>
-                        <td rowspan="<?=count($orderlist)?>"><a href="">查看</a> | <a href="">删除</a></td>
-                    <?php endif;?>
+
+                    <td><a href=""><?=$order['id']?></a></td>
+                    <td>
+                    <?php foreach($order['goods'] as $goods):?>
+
+                    <a href="<?=\yii\helpers\Url::to(['index/detail','id'=>$goods['goods_id']])?>"><img src="<?=$goods['logo']?>" alt="" /></a>
+                    <?php
+                    endforeach;?>
+                    </td>
+                        <td ><?=$order['name']?></td>
+<!---->
+                    <td >￥<?=$order['total']?>&nbsp;<?=$order['payment_name']?></td>
+                        <td ><?=date('Y-m-d H:i:s',$order['create_time'])?> </td>
+                        <td><?=$status[$order['status']]?></td>
+                        <td><a href="">查看</a> | <a href="">删除</a></td>
 
                 </tr>
                 <?php
-                    endforeach;
                     endforeach;?>
                 </tbody>
             </table>

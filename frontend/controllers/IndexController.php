@@ -248,23 +248,18 @@ class IndexController extends Controller{
         if(\Yii::$app->user->isGuest){
             return $this->redirect(['member/login']);
         }
-        $orderlists=[];
         $member_id=\Yii::$app->user->id;
-//        var_dump($member_id);
-        $orders=Order::find()->where(['member_id'=>$member_id])->orderBy(['create_time'=>'desc'])->all();
-//        var_dump($orders);exit;
-        foreach($orders as $order){
-            $goods=OrderGoods::find()->where(['order_id'=>$order->id])->asArray()->all();
-            foreach($goods as $good){
-                $good['username']=$order->name;
-                $good['payment']=$order->payment_name;
-                $good['create_time']=$order->create_time;
-                $good['status']=$order->status;
-                $orderlists[$good['order_id']][]=$good;
+        $orders=Order::find()->where(['member_id'=>$member_id])->orderBy('create_time DESC')->asArray()->all();
+        foreach($orders as &$order){
+            $goods=OrderGoods::find()->where(['order_id'=>$order['id']])->asArray()->all();
+            foreach($goods as $k=>$good){
+                    if($k<=2) {
+                        $order['goods'][] = $good;
+                    }else{
+                        break;
+                    }
+}
             }
-
-        }
-//        var_dump($orderlists);exit;
-        return $this->renderPartial('myorder',['orderlists'=>$orderlists]);
+        return $this->renderPartial('myorder',['orders'=>$orders]);
     }
 }

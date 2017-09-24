@@ -41,7 +41,8 @@ class MemberController extends \yii\web\Controller
                     $user->save(false);
                     \Yii::$app->user->login($user,$remember?3600:0);
                     Member::CookieToTable();
-                    return $this->redirect(['address/index']);
+
+                    return $this->redirect(['index/index']);
                 }
             }
         }
