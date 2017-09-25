@@ -83,24 +83,24 @@ class MemberController extends \yii\web\Controller
                 ['success'=>'false']
             );
         }else{
-//            $rand=rand(1000,9999);
-//            $demo = new SmsDemo(
-//                "LTAI77hnmSBcXeRv",
-//                "VNlLeMCUgkjf4AFRgsQix78eySr4Oy"
-//            );
-//
-//            echo "SmsDemo::sendSms\n";
-//            $response = $demo->sendSms(
-//                "雷婷", // 短信签名
-//                "SMS_97945009", // 短信模板编号
-//                "{$telnum}", // 短信接收者
-//                Array(  // 短信模板中字段的值
-//                    "code"=>"{$rand}",
-//                )
-//            );
+            $rand=rand(1000,9999);
+            $demo = new SmsDemo(
+                "LTAI77hnmSBcXeRv",
+                "VNlLeMCUgkjf4AFRgsQix78eySr4Oy"
+            );
+
+            echo "SmsDemo::sendSms\n";
+            $response = $demo->sendSms(
+                "雷婷", // 短信签名
+                "SMS_97945009", // 短信模板编号
+                "{$telnum}", // 短信接收者
+                Array(  // 短信模板中字段的值
+                    "code"=>"{$rand}",
+                )
+            );
             $redis = new \Redis();
             $redis->connect('127.0.0.1');
-            $redis->set("{$telnum}","123456");
+            $redis->set("{$telnum}","{$rand}");
         }
 
     }
