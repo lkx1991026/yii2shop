@@ -36,7 +36,7 @@ class Brand extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 50],
             [['name','intro','status'],'required','message'=>'内容不能为空'],
             ['name','unique','message'=>'品牌名已存在'],
-            ['logo','string','max'=>255]
+            ['logo','string','max'=>255],
         ];
     }
 

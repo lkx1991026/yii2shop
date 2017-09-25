@@ -13,7 +13,7 @@ echo $form->field($model,'logo')->hiddenInput();
 //===================上传文件插件
 echo \yii\bootstrap\Html::fileInput('test', NULL, ['id' => 'test']);
 echo \flyok666\uploadifive\Uploadifive::widget([
-    'url' => yii\helpers\Url::to(['goods/x-upload']),
+    'url' => yii\helpers\Url::to(['s-upload']),
     'id' => 'test',
     'csrf' => true,
     'renderTag' => false,
@@ -34,8 +34,8 @@ EOF
                 console.log(data.msg);
             } else {
                 console.log(data.fileUrl);
-                 $('#goods-logo').val(data.fileUrl);
-                 $('#logo').attr('src',data.fileUrl);
+                 $('#brand-logo').val(data.fileUrl);
+                 $('#logo_img').attr('src',data.fileUrl);
             }
         }
 EOF
@@ -45,7 +45,7 @@ EOF
 
 
 //=====================
-echo \yii\bootstrap\Html::img($model->logo?$model->logo:null,['id'=>'logo','style'=>'width:100px;']);
+echo \yii\bootstrap\Html::img($model->logo?$model->logo:null,['id'=>'logo_img','style'=>'width:100px;']);
 echo $form->field($model,'sort')->textInput();
 echo $form->field($model,'status',['inline'=>true])->radioList(['隐藏','正常']);
 echo \yii\bootstrap\Html::submitButton('提交',['class'=>'btn btn-info']);

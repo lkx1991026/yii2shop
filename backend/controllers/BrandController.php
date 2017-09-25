@@ -12,7 +12,7 @@ use flyok666\qiniu\Qiniu;
 
 class BrandController extends \yii\web\Controller
 {
-    public $enableCsrfValidation=false;
+//    public $enableCsrfValidation=false;
     public function actionIndex()
     {   $count=Brand::find()->where(['!=','status',-1])->count();
         $pager=new Pagination(
@@ -33,13 +33,7 @@ class BrandController extends \yii\web\Controller
         $request=new Request();
         if($request->isPost){
             $model->load($request->post());
-//            $model->file=UploadedFile::getInstance($model,'file');
             if($model->validate()) {
-//                if ($model->file) {
-//                    $file = '/upload/' . uniqid() . '.' . $model->file->getExtension();
-//                    $model->file->saveAs(\Yii::getAlias('@webroot') . $file, false);
-//                    $model->logo = $file;
-//                }
                 $model->save();
                 \Yii::$app->session->setFlash('success','添加成功');
                 return $this->redirect('/brand/index');
@@ -140,7 +134,7 @@ class BrandController extends \yii\web\Controller
         return [
             'filter'=>[
                 'class'=>RbacFilter::className(),
-                'except'=>['login','logout','error','captcha']
+                'except'=>['login','logout','error','captcha','s-upload']
             ]
         ];
     }
