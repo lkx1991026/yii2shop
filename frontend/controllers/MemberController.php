@@ -83,24 +83,44 @@ class MemberController extends \yii\web\Controller
                 ['success'=>'false']
             );
         }else{
-            $rand=rand(1000,9999);
-            $demo = new SmsDemo(
-                "LTAI77hnmSBcXeRv",
-                "VNlLeMCUgkjf4AFRgsQix78eySr4Oy"
-            );
-
-            echo "SmsDemo::sendSms\n";
-            $response = $demo->sendSms(
-                "雷婷", // 短信签名
-                "SMS_97945009", // 短信模板编号
-                "{$telnum}", // 短信接收者
-                Array(  // 短信模板中字段的值
-                    "code"=>"{$rand}",
-                )
-            );
             $redis = new \Redis();
             $redis->connect('127.0.0.1');
-            $redis->set("{$telnum}","{$rand}");
+            $time=$redis->get('time_'.$telnum);
+            if($time && time()-$time<=60){
+                return json_encode(
+                    ['success'=>'false']
+                );
+            };
+            if(!$time || (date('ymd')-date('ymd',$time)>=1)){
+//                echo 111;
+                $redis->set('count_'.$telnum,0);
+            }
+            $count=$redis->get('count_'.$telnum);
+            if($count>20){
+                return json_encode(
+                    ['success'=>'false']
+                );
+            }
+
+//            $rand=rand(1000,9999);
+//            $demo = new SmsDemo(
+//                "LTAI77hnmSBcXeRv",
+//                "VNlLeMCUgkjf4AFRgsQix78eySr4Oy"
+//            );
+//
+//            echo "SmsDemo::sendSms\n";
+//            $response = $demo->sendSms(
+//                "雷婷", // 短信签名
+//                "SMS_97945009", // 短信模板编号
+//                "{$telnum}", // 短信接收者
+//                Array(  // 短信模板中字段的值
+//                    "code"=>"{$rand}",
+//                )
+//            );
+
+            $redis->set("{$telnum}","123456");
+            $redis->set('time_'.$telnum,time());
+            $redis->incr('count_'.$telnum);
         }
 
     }

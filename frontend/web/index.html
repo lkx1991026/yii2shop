@@ -24,11 +24,11 @@
         <div class="topnav_right fr">
             <ul>
 
-                <li id="user">您好，欢迎来到京西！[<a href="<?=\yii\helpers\Url::to(['member/login'])?>">登录</a>] [<a href="<?=\yii\helpers\Url::to(['member/register'])?>">免费注册</a>] </li>
+                <li id="user">您好，欢迎来到京西！[<a href="/member/login.html">登录</a>] [<a href="/member/register.html">免费注册</a>] </li>
 
 
                 <li class="line">|</li>
-                <li><a href="<?=\yii\helpers\Url::to(['index/myorder'])?>">我的订单</a></li>
+                <li><a href="/index/myorder.html">我的订单</a></li>
                 <li class="line">|</li>
                 <li>客户服务</li>
 
@@ -113,7 +113,7 @@
         <div class="cart fl">
             <dl>
                 <dt>
-                    <a href="<?=\yii\helpers\Url::to(['index/cart','id'=>Yii::$app->user->id])?>">去购物车结算</a>
+                    <a href="/index/cart.html">去购物车结算</a>
                     <b></b>
                 </dt>
                 <dd>
@@ -139,13 +139,7 @@
             </div>
 
             <div class="cat_bd">
-                <?php
-                    $redis=new Redis();
-                    $redis->connect('127.0.0.1');
-                    $html=$redis->get('goodscategories');
-                    echo $html;
-                ?>
-            </div>
+                <div class="cat"><h3><a href="/index/show.html?id=11">大家电</a> <b></b></h3><div class="cat_detail"><dl class="dl"><dt><a href="/index/show.html?id=13">电视机</a></dt><dd><a href="/index/show.html?id=16">led电视机</a><a href="/index/show.html?id=19">等离子电视机</a></dd></dl><dl class="dl"><dt><a href="/index/show.html?id=20">洗衣机</a></dt><dd><a href="/index/show.html?id=21">全自动洗衣机</a></dd></dl></div></div><div class="cat"><h3><a href="/index/show.html?id=12">小家电</a> <b></b></h3><div class="cat_detail"><dl class="dl"><dt><a href="/index/show.html?id=14">手机</a></dt><dd><a href="/index/show.html?id=17">安卓手机</a><a href="/index/show.html?id=18">ios手机</a></dd></dl><dl class="dl"><dt><a href="/index/show.html?id=22">厨卫</a></dt><dd><a href="/index/show.html?id=23">吹风机</a><a href="/index/show.html?id=24">抽油烟机</a><a href="/index/show.html?id=27">微波炉</a><a href="/index/show.html?id=26">冰箱</a><a href="/index/show.html?id=28">电饭锅</a><a href="/index/show.html?id=29">电炒锅2</a><a href="/index/show.html?id=30">电炒锅3</a><a href="/index/show.html?id=31">电炒锅3</a></dd></dl></div></div>            </div>
 
 
             </div>

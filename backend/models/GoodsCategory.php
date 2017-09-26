@@ -20,7 +20,8 @@ use Yii;
  */
 class GoodsCategory extends \yii\db\ActiveRecord
 {
-        public static $list=[];
+    public static $list = [];
+
     /**
      * @inheritdoc
      */
@@ -35,10 +36,10 @@ class GoodsCategory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [[ 'depth', 'parent_id'], 'integer'],
+            [['depth', 'parent_id'], 'integer'],
             [['intro'], 'string'],
             [['name'], 'string', 'max' => 50],
-            [['intro','name'],'required']
+            [['intro', 'name'], 'required']
         ];
     }
 
@@ -58,7 +59,9 @@ class GoodsCategory extends \yii\db\ActiveRecord
             'intro' => '简介',
         ];
     }
-    public function behaviors() {
+
+    public function behaviors()
+    {
         return [
             'tree' => [
                 'class' => NestedSetsBehavior::className(),
@@ -81,22 +84,31 @@ class GoodsCategory extends \yii\db\ActiveRecord
     {
         return new CategoryQuery(get_called_class());
     }
-    public static function getNodes(){
-        $top=['id'=>0,'parent_id'=>0,'name'=>'顶级分类'];
-        $categorys=self::find()->asArray()->select(['id','parent_id','name'])->all();
-        array_unshift($categorys,$top);
+
+    public static function getNodes()
+    {
+        $top = ['id' => 0, 'parent_id' => 0, 'name' => '顶级分类'];
+        $categorys = self::find()->asArray()->select(['id', 'parent_id', 'name'])->all();
+        array_unshift($categorys, $top);
         return json_encode($categorys);
     }
 
-        public static function getchildren($arr,$parent_id=0,$deep=0){
-            foreach($arr as $v){
-                if($v['parent_id']==$parent_id){
-                    $v['level']=str_repeat('---',$deep*2).$v['name'];
-                    self::$list[]=$v;
-                    self::getchildren($arr,$v['id'],$deep+1);
-                }
+    public static function getchildren($arr, $parent_id = 0, $deep = 0)
+    {
+        foreach ($arr as $v) {
+            if ($v['parent_id'] == $parent_id) {
+                $v['level'] = str_repeat('---', $deep * 2) . $v['name'];
+                self::$list[] = $v;
+                self::getchildren($arr, $v['id'], $deep + 1);
             }
-            return self::$list;
         }
+        return self::$list;
+    }
 
+    public static function getIndexCategories(){
+        $redis=new \Redis();
+        $redis->connect('127.0.0.1');
+        $html=$redis->get('goodscategories');
+        return $html;
+    }
 }

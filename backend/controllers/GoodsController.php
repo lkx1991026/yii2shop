@@ -59,6 +59,7 @@ class GoodsController extends \yii\web\Controller
                 $goods->save();
                 $content->goods_id=$goods->id;
                 $content->save();
+//                unlink(\Yii::getAlias('@frontend/views/html/'.$id.'.html'));
                 \Yii::$app->session->setFlash('success','添加成功');
                 return $this->redirect(['index']);
             }
@@ -78,6 +79,10 @@ class GoodsController extends \yii\web\Controller
                 $goods->create_time=time();
                 $goods->save();
                 $content->save();
+                if(file_exists(\Yii::getAlias('@frontend/views/html/'.$id.'.html'))){
+                    unlink(\Yii::getAlias('@frontend/views/html/'.$id.'.html'));
+                }
+
                 \Yii::$app->session->setFlash('success','修改成功');
                 return $this->redirect(['index']);
             }
@@ -88,6 +93,9 @@ class GoodsController extends \yii\web\Controller
         $goods=Goods::find()->where(['id'=>$id])->one();
         $goods->status=0;
         $goods->save();
+        if(file_exists(\Yii::getAlias('@frontend/views/html/'.$id.'.html'))){
+            unlink(\Yii::getAlias('@frontend/views/html/'.$id.'.html'));
+        }
         \Yii::$app->session->setFlash('success','删除成功,可在回收站找回!');
         return $this->redirect(['index']);
     }
@@ -98,7 +106,11 @@ class GoodsController extends \yii\web\Controller
     public function actionGdel(){
         $id=\Yii::$app->request->post('id');
         $pic=GoodsGallery::find()->where(['id'=>$id])->one();
+        if(file_exists(\Yii::getAlias('@frontend/views/html/'.$pic->goods_id.'.html'))){
+            unlink(\Yii::getAlias('@frontend/views/html/'.$pic->goods_id.'.html'));
+        }
         $pic->delete();
+
 //        \Yii::$app->session->setFlash('success','删除成功');
 //        return $this->redirect(['goods/gallery?id='.$pic->goods_id]);
     }
@@ -189,6 +201,9 @@ class GoodsController extends \yii\web\Controller
                         $model->path=$key;
                         $model->save();
                         $id=$model->id;
+                        if(file_exists(\Yii::getAlias('@frontend/views/html/'.$model->goods_id.'.html'))){
+                            unlink(\Yii::getAlias('@frontend/views/html/'.$model->goods_id.'.html'));
+                        }
                     }
 
                     $action->output['fileUrl'] = $key;

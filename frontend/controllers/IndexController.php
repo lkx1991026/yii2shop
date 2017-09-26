@@ -18,7 +18,7 @@ class IndexController extends Controller{
     public function actionIndex(){
         $list=GoodsCategory::find()->select(['name','id','parent_id'])->asArray()->all();
 //        $list=GoodsCategory::getList($arr);
-        return $this->renderPartial('index',['list'=>$list]);
+        return $this->renderPartial('index');
     }
     public function actionShow($id,$page=1){
             $list=GoodsCategory::find()->select(['name','id','parent_id'])->asArray()->all();
@@ -54,14 +54,20 @@ class IndexController extends Controller{
         return $this->renderPartial('list',['goods'=>$goods,'item'=>$item,'prevpage'=>$prevPage,'nextpage'=>$nextPage,'pages'=>$pages,'page'=>$page,'list'=>$list]);
     }
     public function actionDetail($id){
-        $list=GoodsCategory::find()->select(['name','id','parent_id'])->asArray()->all();
-        $model=Goods::find()->where('id='.$id)->one();
-        $parent=GoodsCategory::find()->where(['id'=>$model->goods_catgory_id])->one();
-        $gfather=GoodsCategory::find()->where(['id'=>$parent->parent_id])->one();
-        $ggfather=GoodsCategory::find()->where(['id'=>$gfather->parent_id])->one();
-//        $count=GoodsGallery::find()->where('goods_id='.$id)->count();
-        $gallerys=GoodsGallery::find()->where('goods_id='.$id)->all();
-        return $this->renderPartial('show',['model'=>$model,'gallerys'=>$gallerys,'parent'=>$parent,'gfather'=>$gfather,'ggfather'=>$ggfather,'list'=>$list]);
+        if(!file_exists(\Yii::getAlias('@frontend/views/html/'.$id.'.html'))){
+            $list=GoodsCategory::find()->select(['name','id','parent_id'])->asArray()->all();
+            $model=Goods::find()->where('id='.$id)->one();
+            $parent=GoodsCategory::find()->where(['id'=>$model->goods_catgory_id])->one();
+            $gfather=GoodsCategory::find()->where(['id'=>$parent->parent_id])->one();
+            $ggfather=GoodsCategory::find()->where(['id'=>$gfather->parent_id])->one();
+//          $count=GoodsGallery::find()->where('goods_id='.$id)->count();
+            $gallerys=GoodsGallery::find()->where('goods_id='.$id)->all();
+            $html = $this->renderPartial('show',['model'=>$model,'gallerys'=>$gallerys,'parent'=>$parent,'gfather'=>$gfather,'ggfather'=>$ggfather,'list'=>$list]);
+            file_put_contents(\Yii::getAlias('@frontend/views/html/'.$id.'.html'),$html);
+//            exit;
+        }
+
+        return $this->renderPartial('@frontend/views/html/'.$id.'.html');
     }
     public function actionAddcart($goods_id,$amount){
         if(\Yii::$app->user->isGuest){
@@ -262,4 +268,27 @@ class IndexController extends Controller{
             }
         return $this->renderPartial('myorder',['orders'=>$orders]);
     }
+//    public function actionTest(){
+//        unlink(\Yii::getAlias('@frontend/views/html/16.html'));
+//    }
+public function actionViews($id){
+        $redis=new \Redis();
+        $redis->connect('127.0.0.1');
+        $views=$redis->get('count_'.$id);
+        if($views%20==0){
+            Goods::updateAll(['view_times'=>$views],['id'=>$id]);
+        }
+        if(!$views){
+            $view_times=Goods::find()->select('view_times')->where(['id'=>$id])->one();
+//            var_dump($view_times);
+            $views=$view_times->view_times;
+            $redis->set('count_'.$id,$view_times->view_times);
+        }
+        $redis->incr('count_'.$id);
+        return json_encode(
+            [
+                'views'=>$views
+            ]
+        );
+}
 }

@@ -43,13 +43,9 @@
         </div>
         <div class="topnav_right fr">
             <ul>
-                <?php if(Yii::$app->user->isGuest):?>
-                    <li>您好，欢迎来到京西！[<a href="<?=\yii\helpers\Url::to(['member/login'])?>">登录</a>] [<a href="<?=\yii\helpers\Url::to(['member/register'])?>">免费注册</a>] </li>
-                <?php else:?>
-                    <li>您好，欢迎回来<?=Yii::$app->user->identity->username?>！[<a href="<?=\yii\helpers\Url::to(['index/cart'])?>">我的购物车</a>] [<a href="<?=\yii\helpers\Url::to(['member/logout'])?>">安全退出</a>] </li>
-                <?php endif;?>
-                <li class="line">|</li>
-                <li><a href="<?=\yii\helpers\Url::to(['index/myorder'])?>">我的订单</a></li>
+                                    <li>您好，欢迎来到京西！[<a href="/member/login.html">登录</a>] [<a href="/member/register.html">免费注册</a>] </li>
+                                <li class="line">|</li>
+                <li><a href="/index/myorder.html">我的订单</a></li>
                 <li class="line">|</li>
                 <li>客户服务</li>
 
@@ -134,7 +130,7 @@
         <div class="cart fl">
             <dl>
                 <dt>
-                    <a href="<?=\yii\helpers\Url::to(['index/cart','id'=>Yii::$app->user->id])?>">去购物车结算</a>
+                    <a href="/index/cart.html">去购物车结算</a>
                     <b></b>
                 </dt>
                 <dd>
@@ -160,36 +156,50 @@
             </div>
 
             <div class="cat_bd">
-                <?php foreach($list as $v):
-                    if($v['parent_id']==0):
-                        ?>
-                        <div class="cat">
-                            <h3><a href="<?=\yii\helpers\Url::to(['index/show','id'=>$v['id']])?>"><?=$v['name'];?></a> <b></b></h3>
+                                        <div class="cat">
+                            <h3><a href="/index/show.html?id=11">大家电</a> <b></b></h3>
                             <div class="cat_detail">
-                                <?php foreach($list as $k):
-                                    if($k['parent_id']==$v['id']):
-                                        ?>
-                                        <dl class="dl">
-                                            <dt><a href="<?=\yii\helpers\Url::to(['index/show','id'=>$k['id']])?>"><?=$k['name'];?></a></dt>
+                                                                        <dl class="dl">
+                                            <dt><a href="/index/show.html?id=13">电视机</a></dt>
                                             <dd>
-                                                <?php foreach($list as $i):
-                                                    if($i['parent_id']==$k['id']):
-                                                        ?>
-                                                        <a href="<?=\yii\helpers\Url::to(['index/show','id'=>$i['id']])?>"><?php if($i['parent_id']==$k['id'])echo $i['name'] ?></a>
-                                                        <?php
-                                                    endif;
-                                                endforeach;?>
-                                            </dd>
+                                                                                                        <a href="/index/show.html?id=16">led电视机</a>
+                                                                                                                <a href="/index/show.html?id=19">等离子电视机</a>
+                                                                                                    </dd>
                                         </dl>
-                                        <?php
-                                    endif;
-                                endforeach;?>
-                            </div>
+                                                                                <dl class="dl">
+                                            <dt><a href="/index/show.html?id=20">洗衣机</a></dt>
+                                            <dd>
+                                                                                                        <a href="/index/show.html?id=21">全自动洗衣机</a>
+                                                                                                    </dd>
+                                        </dl>
+                                                                    </div>
                         </div>
-                        <?php
-                    endif;
-                endforeach;?>
-            </div>
+                                                <div class="cat">
+                            <h3><a href="/index/show.html?id=12">小家电</a> <b></b></h3>
+                            <div class="cat_detail">
+                                                                        <dl class="dl">
+                                            <dt><a href="/index/show.html?id=14">手机</a></dt>
+                                            <dd>
+                                                                                                        <a href="/index/show.html?id=17">安卓手机</a>
+                                                                                                                <a href="/index/show.html?id=18">ios手机</a>
+                                                                                                    </dd>
+                                        </dl>
+                                                                                <dl class="dl">
+                                            <dt><a href="/index/show.html?id=22">厨卫</a></dt>
+                                            <dd>
+                                                                                                        <a href="/index/show.html?id=23">吹风机</a>
+                                                                                                                <a href="/index/show.html?id=24">抽油烟机</a>
+                                                                                                                <a href="/index/show.html?id=27">微波炉</a>
+                                                                                                                <a href="/index/show.html?id=26">冰箱</a>
+                                                                                                                <a href="/index/show.html?id=28">电饭锅</a>
+                                                                                                                <a href="/index/show.html?id=29">电炒锅2</a>
+                                                                                                                <a href="/index/show.html?id=30">电炒锅3</a>
+                                                                                                                <a href="/index/show.html?id=31">电炒锅3</a>
+                                                                                                    </dd>
+                                        </dl>
+                                                                    </div>
+                        </div>
+                                    </div>
         </div>
         <!--  商品分类部分 end-->
 
@@ -217,7 +227,7 @@
 <div class="main w1210 mt10 bc">
     <!-- 面包屑导航 start -->
     <div class="breadcrumb">
-        <h2>当前位置：<a href="<?=\yii\helpers\Url::to(['index/index'])?>">首页</a> > <a href="<?=\yii\helpers\Url::to(['index/show','id'=>$ggfather->id])?>"><?=$ggfather->name?></a> > <a href="<?=\yii\helpers\Url::to(['index/show','id'=>$gfather->id])?>"><?=$gfather->name?></a> > <a href="<?=\yii\helpers\Url::to(['index/show','id'=>$parent->id])?>"><?=$parent->name?></a> ><?=$model->name?></h2>
+        <h2>当前位置：<a href="/index/index.html">首页</a> > <a href="/index/show.html?id=12">小家电</a> > <a href="/index/show.html?id=22">厨卫</a> > <a href="/index/show.html?id=23">吹风机</a> >戴森(Dyson) 吹风机 Dy</h2>
     </div>
     <!-- 面包屑导航 end -->
 
@@ -321,13 +331,13 @@
     <div class="goods_content fl mt10 ml10">
         <!-- 商品概要信息 start -->
         <div class="summary">
-            <h3><strong><?=$model->name?></strong></h3>
+            <h3><strong>戴森(Dyson) 吹风机 Dy</strong></h3>
 
             <!-- 图片预览区域 start -->
             <div class="preview fl">
                 <div class="midpic">
-                    <a href="<?=substr($gallerys[0]['path'],0,4)=='http'?$gallerys[0]['path']:'http://admin.yii2shop.com'.$gallerys[0]['path']?>" class="jqzoom" rel="gal1">   <!-- 第一幅图片的大图 class 和 rel属性不能更改 -->
-                        <img src="<?=substr($gallerys[0]['path'],0,4)=='http'?$gallerys[0]['path']:'http://admin.yii2shop.com'.$gallerys[0]['path']?>" alt="" style="height:350px;width:350px;"/>               <!-- 第一幅图片的中图 -->
+                    <a href="http://admin.yii2shop.com/upload/e0/b5/e0b50bc180c205324df37d1f81fcd57b4e7eb360.jpg" class="jqzoom" rel="gal1">   <!-- 第一幅图片的大图 class 和 rel属性不能更改 -->
+                        <img src="http://admin.yii2shop.com/upload/e0/b5/e0b50bc180c205324df37d1f81fcd57b4e7eb360.jpg" alt="" style="height:350px;width:350px;"/>               <!-- 第一幅图片的中图 -->
                     </a>
                 </div>
 
@@ -338,13 +348,27 @@
                     <a href="javascript:;" id="forward" class="on"></a>
                     <div class="smallpic_wrap">
                         <ul>
-                            <?php foreach($gallerys as $k=>$gallery):?>
-
-                            <li class="<?=$k?null:'cur'?>">
-                                <a class="<?=$k?null:'zoomThumbActive'?>" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: '<?=substr($gallery['path'],0,4)=='http'?$gallery['path']:'http://admin.yii2shop.com'.$gallery['path']?>',largeimage: '<?=substr($gallery['path'],0,4)=='http'?$gallery['path']:'http://admin.yii2shop.com'.$gallery['path']?>'}"><img src="<?=substr($gallery['path'],0,4)=='http'?$gallery['path']:'http://admin.yii2shop.com'.$gallery['path']?>"></a>
+                            
+                            <li class="cur">
+                                <a class="zoomThumbActive" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: 'http://admin.yii2shop.com/upload/e0/b5/e0b50bc180c205324df37d1f81fcd57b4e7eb360.jpg',largeimage: 'http://admin.yii2shop.com/upload/e0/b5/e0b50bc180c205324df37d1f81fcd57b4e7eb360.jpg'}"><img src="http://admin.yii2shop.com/upload/e0/b5/e0b50bc180c205324df37d1f81fcd57b4e7eb360.jpg"></a>
                             </li>
-                            <?php endforeach;?>
-                        </ul>
+                            
+                            <li class="">
+                                <a class="" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: 'http://admin.yii2shop.com/upload/19/01/19019027c19a5020476e35b95c64640fcd0b3fc0.jpg',largeimage: 'http://admin.yii2shop.com/upload/19/01/19019027c19a5020476e35b95c64640fcd0b3fc0.jpg'}"><img src="http://admin.yii2shop.com/upload/19/01/19019027c19a5020476e35b95c64640fcd0b3fc0.jpg"></a>
+                            </li>
+                            
+                            <li class="">
+                                <a class="" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: 'http://admin.yii2shop.com/upload/d0/3d/d03da8a6c257e8fdd5883b3d8325d675a95b796c.jpg',largeimage: 'http://admin.yii2shop.com/upload/d0/3d/d03da8a6c257e8fdd5883b3d8325d675a95b796c.jpg'}"><img src="http://admin.yii2shop.com/upload/d0/3d/d03da8a6c257e8fdd5883b3d8325d675a95b796c.jpg"></a>
+                            </li>
+                            
+                            <li class="">
+                                <a class="" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: 'http://admin.yii2shop.com/upload/c9/4a/c94a5c7d084969d43c9050e174822c76a389b8a4.jpg',largeimage: 'http://admin.yii2shop.com/upload/c9/4a/c94a5c7d084969d43c9050e174822c76a389b8a4.jpg'}"><img src="http://admin.yii2shop.com/upload/c9/4a/c94a5c7d084969d43c9050e174822c76a389b8a4.jpg"></a>
+                            </li>
+                            
+                            <li class="">
+                                <a class="" href="javascript:void(0);" rel="{gallery: 'gal1', smallimage: 'http://admin.yii2shop.com/upload/65/aa/65aa8f3300276fc1b7ce9a2155b810679234304f.jpg',largeimage: 'http://admin.yii2shop.com/upload/65/aa/65aa8f3300276fc1b7ce9a2155b810679234304f.jpg'}"><img src="http://admin.yii2shop.com/upload/65/aa/65aa8f3300276fc1b7ce9a2155b810679234304f.jpg"></a>
+                            </li>
+                                                    </ul>
                     </div>
 
                 </div>
@@ -354,13 +378,13 @@
             <!-- 商品基本信息区域 start -->
             <div class="goodsinfo fl ml10">
                 <ul>
-                    <li><span>商品编号： </span><?=$model->sn?></li>
-                    <li class="market_price"><span>定价：</span><em>￥<?=$model->shop_price?></em></li>
-                    <li class="shop_price"><span>本店价：</span> <strong>￥<?=$model->market_price?></strong> <a href="">(降价通知)</a></li>
-                    <li><span>上架时间：</span><?=date('Y-m-d',$model->create_time)?></li>
+                    <li><span>商品编号： </span>201709220001</li>
+                    <li class="market_price"><span>定价：</span><em>￥2999</em></li>
+                    <li class="shop_price"><span>本店价：</span> <strong>￥3999</strong> <a href="">(降价通知)</a></li>
+                    <li><span>上架时间：</span>2017-09-22</li>
                     <li class="star"><span>商品浏览次数：</span> <strong></strong><a href="">(已有<span id="view_times"></span>人浏览)</a></li> <!-- 此处的星级切换css即可 默认为5星 star4 表示4星 star3 表示3星 star2表示2星 star1表示1星 -->
                 </ul>
-                <form action="<?=\yii\helpers\Url::to(['index/addcart'])?>" method="get" class="choose">
+                <form action="/index/addcart.html" method="get" class="choose">
                     <ul>
 
                         <li>
@@ -368,7 +392,7 @@
                                 <dt>购买数量：</dt>
                                 <dd>
                                     <a href="javascript:;" id="reduce_num"></a>
-                                    <input type="hidden" name="goods_id" value="<?=$model->id?>">
+                                    <input type="hidden" name="goods_id" value="17">
                                     <input type="text" name="amount" value="1" class="amount"/>
                                     <a href="javascript:;" id="add_num"></a>
                                 </dd>
@@ -407,8 +431,7 @@
                 <div class="introduce detail_div none">
                     <div class="desc mt10">
                         <!-- 此处的内容 一般是通过在线编辑器添加保存到数据库，然后直接从数据库中读出 -->
-                        <?=str_replace('src="/upload','src="http://admin.yii2shop.com/upload',$model->intro->content)?>
-                    </div>
+                        <ul class="p-parameter-list list-paddingleft-2" style="list-style-type: none;"><li><p>品牌：&nbsp;<a href="https://list.jd.com/list.html?cat=737,1276,740&ev=exbrand_39125" target="_blank" style="margin: 0px; padding: 0px; color: rgb(94, 105, 173); text-decoration-line: none;">DYSON</a></p></li><li><p>商品名称：DYSONHD01 紫红色</p></li><li><p>商品编号：3368118</p></li><li><p>商品毛重：2.11kg</p></li><li><p>商品产地：马来西亚</p></li><li><p>功率：1500W~1999W</p></li><li><p>功能：负离子防静电功能</p></li></ul><p class="more-par" style="margin-top: -5px; margin-bottom: 0px; padding: 0px 20px 0px 0px; text-align: right;"><a href="https://item.jd.com/3368118.html#product-detail" class="J-more-param" style="margin: 0px; padding: 0px; color: rgb(0, 90, 160); text-decoration-line: none;">更多参数<span class="txt-arr">&gt;&gt;</span></a></p><p><a target="_blank" title="" href="https://c-nfa.jd.com/adclick?keyStr=6PQwtwh0f06syGHwQVvRO2qQjwLJ5GHB8CWaVmO7akwoulNS4ZKNBwYxf9Rs3mLqxc4UMwHYIqhgzktI/GPwC3WPBXHTRnRS20+veVnXMHthI7zybR83/L1JEdiJvzzM4fLWlvRBkxoM4QrINBB7LR9SL0OmYHJCXMiJScuto8q+teja/lksOUoaJPoBqg6/jnSIFtrxkX4xkYbQvHViCGKnFtB6rhrxWO1MpkcMG5SoRUSOdb56zrttLfl8vNBFcptr0poJNKZrfeMvuWRplv4bRbtDQshzWfMXyqdyQxyNrmP1wRDLNloYOL46zk6YpGgD9f7DD80JI2OBqrgiZA==&cv=2.0&url=https://sale.jd.com/act/E628Vy4PZIDGrt.html" style="margin: 0px; padding: 0px; color: rgb(102, 102, 102); text-decoration-line: none;"><img width="990" alt="" src="https://img10.360buyimg.com/da/jfs/t8680/207/1525872098/117074/2a8976e9/59bb2a8cN5a735db5.jpg"/></a></p><p><a target="_blank" href="https://sale.jd.com/act/1dCqk7TBj5porf8.html" style="margin: 0px; padding: 0px; color: rgb(102, 102, 102); text-decoration-line: none;"><img alt="" class="" src="https://img30.360buyimg.com/jgsq-productsoa/jfs/t8110/251/1810129748/70779/6d34f390/59bf9abfN3642642a.gif"/></a></p><p><img class="" src="https://img20.360buyimg.com/vc/jfs/t8545/159/1961900124/271285/71e50031/59c22a41Nfa6bde04.jpg"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7729/361/1322672762/823505/48297c69/599be555Naddec96d.gif"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7432/108/1283950035/249083/649304d0/599b99fbN577adb1e.jpg"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7372/362/1274526709/848571/ca80ea3c/599bef4eNeb3508f3.gif"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7924/17/1263524927/837043/6aec685b/599bef60Nf2140681.gif"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7261/95/1303651322/949867/e7ede79e/599bef58Nc8f40a42.gif"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7627/161/1310642821/773544/56c4205b/599b99fdN7c3e8070.jpg"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7459/126/1257556495/45356/23539b83/599b99fdN9231d3cf.jpg"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7336/68/1234165715/97859/1ebccdcb/599b99fdNce33b4fd.jpg"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7324/1/1298055552/505621/b35e0f7c/599bf0c9N15a4820a.gif"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7801/136/1302435350/254139/acf4540/599bf0d0Nbdde6339.gif"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t7450/129/2419850453/92830/b11efd1a/59ae29d1Ne5f0145b.jpg"/><img class="" src="https://img20.360buyimg.com/vc/jfs/t8620/118/1478094883/725644/3ae710c1/59ba4603Nd87a8de3.jpg"/></p><p><br/></p>                    </div>
                 </div>
                 <!-- 商品介绍 end -->
 
@@ -732,7 +755,7 @@
 
 <script type="text/javascript">
     document.execCommand("BackgroundImageCache", false, true);
-    $.getJSON('<?=\yii\helpers\Url::to(['index/views','id'=>$model->id])?>',function (data) {
+    $.getJSON('/index/views.html?id=17',function (data) {
         $('#view_times').text(data.views)
     })
 

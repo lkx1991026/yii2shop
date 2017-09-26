@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use backend\filters\RbacFilter;
 use backend\models\GoodsCategory;
+use frontend\models\Sys;
 use Symfony\Component\CssSelector\XPath\Extension\HtmlExtension;
 use yii\web\HttpException;
 
@@ -22,6 +23,8 @@ class GoodsCategoryController extends \yii\web\Controller
                     $model->makeRoot();
                 }
             }
+
+            \Yii::$app->runAction('/sys/index-categories');
             \Yii::$app->session->setFlash('success','添加成功');
             return $this->redirect(['index']);
         }
@@ -54,7 +57,7 @@ class GoodsCategoryController extends \yii\web\Controller
                         $model->makeRoot();
                     }
                 }
-
+                \Yii::$app->runAction('/sys/index-categories');
                 \Yii::$app->session->setFlash('success', '修改成功');
                 return $this->redirect(['index']);
             }
@@ -67,6 +70,7 @@ class GoodsCategoryController extends \yii\web\Controller
 
 //        var_dump($children);exit;
         if($node->isLeaf()){
+            \Yii::$app->runAction('/sys/index-categories');
             \Yii::$app->session->setFlash('success','删除成功');
             $node->deleteWithChildren();
 
